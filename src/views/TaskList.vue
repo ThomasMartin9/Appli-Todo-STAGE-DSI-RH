@@ -77,7 +77,7 @@ console.log("S => ", isTaskTagged.value, noTagSelected.value)
             </div>
             <div class="tags">
                 <div
-                    v-for="tag in tags"
+                    v-for="tag in getAllTags()"
                     v-show="showTagSelection"
                 >
                     <TaskFilters

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { deleteTag } from '@/controllers/tag.controller';
+import { deleteTag, toggleSelectTag } from '@/controllers/tag.controller';
 import { computed, ref } from 'vue';
 
 const props = defineProps<{
@@ -33,51 +33,9 @@ computed(() => {
         isTagForSelectionSelected.value = true
 })
 
-function toggleSelect(filter: string = "search")
+function toggleSelect(filter: string = "search", isSelected: boolean)
 {
-    if (filter == "search")
-    {
-        isSelected.value = !isSelected.value
-        if (isSelected.value)
-        {
-            let selectedTags = JSON.parse(localStorage.getItem('selected-tags') || '[]')
-            if (!selectedTags.includes(props.id))
-            {
-                selectedTags.push(props.id);
-                localStorage.setItem('selected-tags', JSON.stringify(selectedTags))
-            }
-        }
-        else 
-        {
-            let selectedTags = JSON.parse(localStorage.getItem('selected-tags') || '[]')
-            const index = selectedTags.indexOf(props.id);
-            if (index !== -1)
-                selectedTags.splice(index, 1)
-            localStorage.setItem('selected-tags', JSON.stringify(selectedTags))
-        }
-    }
-    else if (filter == "task")
-    {
-        isTagForSelectionSelected.value = !isTagForSelectionSelected.value
-        if (isTagForSelectionSelected.value)
-        {
-            let selectedTagsForTask = JSON.parse(localStorage.getItem(`tag-selection-for-task-${props.taskId}`) || '[]')
-            if (!selectedTagsForTask.includes(props.id))
-            {
-                selectedTagsForTask.push(props.id)
-                localStorage.setItem(`tag-selection-for-task-${props.taskId}`, JSON.stringify(selectedTagsForTask))
-            }
-        }
-        else
-        {
-            let selectedTagsForTask = JSON.parse(localStorage.getItem(`tag-selection-for-task-${props.taskId}`) || '[]')
-            const index = selectedTagsForTask.indexOf(props.id);
-            if (index !== -1)
-                selectedTagsForTask.splice(index, 1)
-            localStorage.setItem(`tag-selection-for-task-${props.taskId}`, JSON.stringify(selectedTagsForTask))
-        }
-        window.location.reload()
-    }
+    return toggleSelectTag(filter, isSelected, props.id, props.taskId || 0, isTagForSelectionSelected.value)
 }
 
 </script>
@@ -86,24 +44,37 @@ function toggleSelect(filter: string = "search")
 
 <button
     type="button"
-    class="fr-tag"
-    :class="{ 'selected': isSelected || isTagForSelectionSelected }"
-    :style="
-        `background-color:${color};
-        color:${getTextColor(color)} !important;`
-    "
-    @click="toggleSelect(type)"
+    class="fr-tag parent-button"
+    @click="isSelected = toggleSelect(type, isSelected)"
+    style="background-color: transparent !important;"
 >
     <button
         @click="deleteTag(props.id)"
         v-show="type == 'search'"
+        class="tag-delete-cross"
+        style="text-decoration: none !important;"
     >X</button>
-    {{ name }}
+    <button
+        class="fr-tag select-button"
+        :class="{ 'selected': isSelected || isTagForSelectionSelected }"
+        :style="
+            `background-color:${color};
+            color:${getTextColor(color)} !important;`
+        "
+    >
+        {{ name }}
+    </button>
 </button>
 
 </template>
 
 <style lang="css" scoped>
+
+.fr-tag.parent-button
+{
+    overflow: visible;
+    padding: 0;
+}
 
 .fr-tag
 {
@@ -116,24 +87,31 @@ function toggleSelect(filter: string = "search")
     justify-content: left;
 }
 
-.fr-tag:hover
+.tag-delete-cross
+{
+    position: relative;
+    border-radius: 10px;
+    z-index: 200;
+}
+
+.select-button:hover
 {
     text-decoration: underline;
     transition: all .4s;
 }
 
-button:not(.fr-tag)
+.select-button:not(.fr-tag)
 {
     border-radius: 50%;
     width: 22px;
-    /* margin-top: auto; */
     margin-bottom: auto;
+    z-index: 100;
 }
-button:hover
+.select-button:hover
 {
     background-color: #00000066;
 }
-button.selected
+.select-button.selected
 {
     box-shadow: 0 0 10px #000;
 }

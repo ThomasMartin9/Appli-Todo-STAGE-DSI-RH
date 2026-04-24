@@ -79,10 +79,19 @@ function handleSubmit()
     </fieldset>
 
     <div id="form-button">
-        <button class="fr-btn" type="button" id="taskform-form-submit-button" @click="handleSubmit">
+        <button
+            class="fr-btn"
+            type="button"
+            id="taskform-form-submit-button"
+            @click="handleSubmit(); tagId = ''; color = ''"
+        >
             Enregistrer les informations
         </button>
-        <button class="fr-btn" type="button" @click="emit('close')">
+        <button
+            class="fr-btn"
+            type="button"
+            @click="emit('close'); tagId = ''; color = ''"
+        >
             Annuler
         </button>
     </div>

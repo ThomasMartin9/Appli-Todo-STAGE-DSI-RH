@@ -1,4 +1,4 @@
-import { getAllTags, Tag, tagToJson } from "@/models/tag.model";
+import { getAllTags, getTag, Tag, tagToJson } from "@/models/tag.model";
 
 export function createTag(name: string, color: string) : number
 {
@@ -23,7 +23,70 @@ export function createTag(name: string, color: string) : number
 export function deleteTag(id: number)
 {
     localStorage.removeItem(`tag-${id}`)
-    window.location.reload()
+    // window.location.reload()
+}
+
+export function toggleSelectTag
+(
+    filter: string = "search",
+    isSelected: boolean,
+    id: number,
+    taskId: number,
+    isTagForSelectionSelected: boolean
+) : boolean
+{
+    if (!getAllTags().includes(getTag(id)))
+    {
+        let jsonTags = JSON.parse(getAllSelectedTags())
+        const indexOfId = jsonTags.indexOf(getTag(id))
+        jsonTags.splice(indexOfId)
+        localStorage.setItem("selected-tags", jsonTags)
+    }
+
+    if (filter == "search")
+    {
+        isSelected = !isSelected
+        if (isSelected)
+        {
+            let selectedTags = JSON.parse(localStorage.getItem('selected-tags') || '[]')
+            if (!selectedTags.includes(id))
+            {
+                selectedTags.push(id);
+                localStorage.setItem('selected-tags', JSON.stringify(selectedTags))
+            }
+        }
+        else 
+        {
+            let selectedTags = JSON.parse(localStorage.getItem('selected-tags') || '[]')
+            const index = selectedTags.indexOf(id);
+            if (index !== -1)
+                selectedTags.splice(index, 1)
+            localStorage.setItem('selected-tags', JSON.stringify(selectedTags))
+        }
+    }
+    else if (filter == "task")
+    {
+        isTagForSelectionSelected = !isTagForSelectionSelected
+        if (isTagForSelectionSelected)
+        {
+            let selectedTagsForTask = JSON.parse(localStorage.getItem(`tag-selection-for-task-${taskId}`) || '[]')
+            if (!selectedTagsForTask.includes(id))
+            {
+                selectedTagsForTask.push(id)
+                localStorage.setItem(`tag-selection-for-task-${taskId}`, JSON.stringify(selectedTagsForTask))
+            }
+        }
+        else
+        {
+            let selectedTagsForTask = JSON.parse(localStorage.getItem(`tag-selection-for-task-${taskId}`) || '[]')
+            console.log(selectedTagsForTask)
+            const index = selectedTagsForTask.indexOf(id);
+            // if (index !== -1)
+            //     selectedTagsForTask.splice(index, 1)
+            localStorage.setItem(`tag-selection-for-task-${taskId}`, JSON.stringify(selectedTagsForTask))
+        }
+    }
+    return isSelected
 }
 
 export function addTagToTask(tagId: number, taskId: number)
