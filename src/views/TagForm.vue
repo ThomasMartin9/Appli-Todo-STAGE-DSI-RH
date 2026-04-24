@@ -25,7 +25,7 @@ function handleSubmit()
         if (tags[i]?.name === tagId.value)
         {
             window.alert("Vous ne pouvez pas créer deux tag du même nom")
-            return
+            emit('close')
         }
     }
 
@@ -46,7 +46,7 @@ function handleSubmit()
         console.log("Hello this is tag", res)
     }
     
-    return
+    emit('close')
 }
 
 </script>

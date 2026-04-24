@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { areAllTasksOpen, getAllTasks, toggleAllTaskOpenning } from './controllers/task.controller';
 import TaskFrom from './views/TaskFrom.vue';
 import TaskList from './views/TaskList.vue';
@@ -9,7 +9,7 @@ import '@gouvfr/dsfr/dist/utility/utility.css'
 import '@gouvfr/dsfr/dist/component/form/form.css'
 import '@gouvfr/dsfr/dist/component/accordion/accordion.css'
 import TaskFilters from './views/TaskFilters.vue';
-import { getAllTags } from './models/tag.model';
+import { getAllTags, Tag } from './models/tag.model';
 import TagForm from './views/TagForm.vue';
 import { getAllSelectedTags, isTaskTaggedBy, isTaskTaggedBySelected } from './controllers/tag.controller';
 
@@ -43,7 +43,9 @@ const isExpanded = computed(() => {
     return false
 })
 
+// const tags = ref(getAllTags())
 const tags = ref(getAllTags())
+
 const showTagCreation = ref(false)
 
 const filterKey = ref(0)
@@ -101,6 +103,7 @@ window.addEventListener('storage', () => {
         <p class="fr-fieldset">Tags</p>
         <div
             v-for="tag in tags"
+            :key="tag.id"
         >
             <TaskFilters
                 :id="tag.id"
@@ -145,7 +148,7 @@ window.addEventListener('storage', () => {
 
     <TagForm
         v-show="showTagCreation"
-        @close="showTagCreation = false"
+        @close="showTagCreation = false; tags = getAllTags()"
     ></TagForm>
 </main>
 
