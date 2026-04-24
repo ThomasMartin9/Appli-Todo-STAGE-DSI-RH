@@ -15,7 +15,7 @@ export function createTag(name: string, color: string) : number
     const tagJson = tagToJson(tag)
     localStorage.setItem(`tag-${tag.id}`, JSON.stringify(tagJson))
 
-    window.location.reload()
+    // window.location.reload()
 
     return tag.id
 }

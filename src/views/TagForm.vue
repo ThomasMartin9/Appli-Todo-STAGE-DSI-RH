@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { createTag } from '@/controllers/tag.controller';
+import { getAllTags } from '@/models/tag.model';
 import { ref } from 'vue'
 
 const tagId = ref<string>('')
@@ -15,6 +16,19 @@ function handleSubmit()
         return
     }
 
+    console.log("Verify tag unicity")
+
+    const tags = getAllTags()
+    for (let i = 0; i < tags.length; i++)
+    {
+        console.log(tags[i], i)
+        if (tags[i]?.name === tagId.value)
+        {
+            window.alert("Vous ne pouvez pas créer deux tag du même nom")
+            return
+        }
+    }
+
     let res: string = "#"
     let characters: string = "0123456789ABCDEF"
     const characterLength = characters.length
@@ -28,11 +42,11 @@ function handleSubmit()
     {
         for (let i = 0; i < 6; i++)
             res += characters.charAt(Math.floor(Math.random() * characterLength))
-        createTag(res, res.toLocaleLowerCase())
+        createTag(tagId.value, res.toLocaleLowerCase())
         console.log("Hello this is tag", res)
     }
     
-    // emit('close')
+    return
 }
 
 </script>
