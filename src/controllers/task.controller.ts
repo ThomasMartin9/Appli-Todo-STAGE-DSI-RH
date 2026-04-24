@@ -165,25 +165,31 @@ export function getTaskStatusBadgeName(task: Task)
         return "écheance proche"
 }
 
-const ls_asksOpen = localStorage.getItem('tasks-open')
-let tasksOpen: boolean
-if (ls_asksOpen == "true")
-    tasksOpen = true
-else
-    tasksOpen = false
-
 export function areAllTasksOpen() : boolean
 { 
     if ((localStorage.getItem("tasks-open") || "" ) == "true")
         return true
     return false
 }
-export function toggleAllTaskOpenning()
+export function isTaskOpen(taskId: number, isOpen: boolean) : boolean
 {
-    tasksOpen = !tasksOpen
-    localStorage.setItem('tasks-open', tasksOpen ? "true" : "false")
+    if (isOpen || areAllTasksOpen())
+        return true
+    return false
+}
+export function toggleAllTaskOpenning(allTasksOpen: boolean)
+: boolean
+{
+    allTasksOpen = !allTasksOpen
+    localStorage.setItem('tasks-open', allTasksOpen ? "true" : "false")
 
-    window.location.reload()
+    // window.location.reload()
+    return allTasksOpen
+}
+export function getTasksOpen_localStorage()
+: string
+{
+    return localStorage.getItem("tasks-open") || "false"
 }
 
 //* TaskFilters.vue

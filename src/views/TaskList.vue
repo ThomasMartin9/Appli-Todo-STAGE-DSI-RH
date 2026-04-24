@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { areAllTasksOpen, getTask, getTaskStatus, getTaskStatusBadgeName } from '@/controllers/task.controller';
+import { areAllTasksOpen, getTask, getTaskStatus, getTaskStatusBadgeName, isTaskOpen } from '@/controllers/task.controller';
 import { computed, ref } from 'vue';
 import TaskItem from './TaskItem.vue';
 import TaskFilters from './TaskFilters.vue';
@@ -41,7 +41,7 @@ console.log("S => ", isTaskTagged.value, noTagSelected.value)
         <button
             type="button"
             class="fr-accordion__btn"
-            :aria-expanded="isOpen"
+            :aria-expanded="isTaskOpen(props.taskId, isOpen)"
             aria-controls="accordion-1"
             @click="isOpen = !isOpen"
         >
@@ -56,7 +56,7 @@ console.log("S => ", isTaskTagged.value, noTagSelected.value)
     </h3>
     <div
         id="accordion-1"
-        :class="{ 'fr-collapse-expanded': isOpen, 'fr-collapse': !isOpen }"
+        :class="{ 'fr-collapse-expanded': isTaskOpen(props.taskId, isOpen), 'fr-collapse': !isTaskOpen(props.taskId, isOpen)}"
     >
         <TaskItem
             :taskId="props.taskId"

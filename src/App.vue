@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
-import { computed, ref } from 'vue';
-import { getAllTasks, toggleAllTaskOpenning } from './controllers/task.controller';
+import { computed, onMounted, ref } from 'vue';
+import { getAllTasks, getTasksOpen_localStorage, toggleAllTaskOpenning } from './controllers/task.controller';
 import TaskFrom from './views/TaskFrom.vue';
 import TaskList from './views/TaskList.vue';
 import '@gouvfr/dsfr/dist/dsfr.css'
@@ -35,6 +35,16 @@ const tasks = computed(() => {
     })
 })
 
+const allTasksOpen = ref<boolean>(stringToBoolean(localStorage.getItem("tasks-open") || "false") || false)
+
+function stringToBoolean(text: string) : boolean 
+{
+    if (text == "true")
+        return true
+    else
+        return false
+}
+
 const showForm = ref(false)
 
 const isExpanded = computed(() => {
@@ -43,7 +53,6 @@ const isExpanded = computed(() => {
     return false
 })
 
-// const tags = ref(getAllTags())
 const tags = ref(getAllTags())
 
 const showTagCreation = ref(false)
@@ -87,10 +96,10 @@ function isTaskVisible(taskId: number): boolean {
             </div>
         </div>
         <button
-            @click="toggleAllTaskOpenning()"
+            @click="allTasksOpen = toggleAllTaskOpenning(allTasksOpen)"
             class="prevent-selec fr-btn btn-open-close-all-tasks"
         >
-            {{ isExpanded ? "Fermer les tâches" : "Ouvrir les tâches" }}
+            {{ allTasksOpen ? "Fermer les tâches" : "Ouvrir les tâches" }}
         </button>
     </div>
 
@@ -138,7 +147,7 @@ function isTaskVisible(taskId: number): boolean {
 
     <TaskFrom
         v-show="showForm"
-        @close="showForm = false"
+        @close="showForm = false; tasks = getAllTasks()"
     ></TaskFrom>
 
     <TagForm
