@@ -15,10 +15,24 @@ function handleSubmit()
         return
     }
 
+    let res: string = "#"
+    let characters: string = "0123456789ABCDEF"
+    const characterLength = characters.length
     // create task
-    createTag(tagId.value, color.value.toLocaleLowerCase())
+    if (color.value != "")
+    {
+        createTag(tagId.value, color.value.toLocaleLowerCase())
+        console.warn("HELLO")
+    }
+    else 
+    {
+        for (let i = 0; i < 6; i++)
+            res += characters.charAt(Math.floor(Math.random() * characterLength))
+        createTag(res, res.toLocaleLowerCase())
+        console.log("Hello this is tag", res)
+    }
     
-    emit('close')
+    // emit('close')
 }
 
 </script>
