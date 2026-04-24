@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
-import { computed, onMounted, ref } from 'vue';
-import { areAllTasksOpen, getAllTasks, toggleAllTaskOpenning } from './controllers/task.controller';
+import { computed, ref } from 'vue';
+import { getAllTasks, toggleAllTaskOpenning } from './controllers/task.controller';
 import TaskFrom from './views/TaskFrom.vue';
 import TaskList from './views/TaskList.vue';
 import '@gouvfr/dsfr/dist/dsfr.css'
@@ -9,9 +9,9 @@ import '@gouvfr/dsfr/dist/utility/utility.css'
 import '@gouvfr/dsfr/dist/component/form/form.css'
 import '@gouvfr/dsfr/dist/component/accordion/accordion.css'
 import TaskFilters from './views/TaskFilters.vue';
-import { getAllTags, Tag } from './models/tag.model';
+import { getAllTags } from './models/tag.model';
 import TagForm from './views/TagForm.vue';
-import { getAllSelectedTags, isTaskTaggedBy, isTaskTaggedBySelected } from './controllers/tag.controller';
+import { isTaskTaggedBySelected } from './controllers/tag.controller';
 
 const selectedValue = ref<string>('0')
 let values = ["due-date", "title", "completed-at"]
@@ -54,11 +54,6 @@ function isTaskVisible(taskId: number): boolean {
     filterKey.value
     return isTaskTaggedBySelected(taskId)
 }
-
-// Écoute les changements de sélection de tags
-window.addEventListener('storage', () => {
-    filterKey.value++
-})
 
 </script>
 
@@ -148,7 +143,7 @@ window.addEventListener('storage', () => {
 
     <TagForm
         v-show="showTagCreation"
-        @close="showTagCreation = false; tags = getAllTags()"
+        @close="showTagCreation = !showTagCreation; tags = getAllTags()"
     ></TagForm>
 </main>
 

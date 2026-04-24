@@ -70,7 +70,7 @@ function handleSubmit()
         <button class="fr-btn" type="button" id="taskform-form-submit-button" @click="handleSubmit">
             Enregistrer les informations
         </button>
-        <button class="fr-btn" type="submit">
+        <button class="fr-btn" type="button" @click="emit('close')">
             Annuler
         </button>
     </div>
